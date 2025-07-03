@@ -13,9 +13,10 @@ async function main() {
     });
 
     // Validate configuration
-    if (!config.anthropicApiKey) {
-      throw new Error('ANTHROPIC_API_KEY environment variable is required');
-    }
+    logger.info('Claude Code MCP Integration Status:', {
+      enabled: config.claudeCodeIntegration.enabled,
+      fallbackMode: config.claudeCodeIntegration.fallbackMode
+    });
 
     // Create and start MCP server
     const server = new AutoTestMCPServer();

@@ -5,17 +5,17 @@ import {
   TestSuiteResult, 
   AIAnalysis 
 } from '../types/index.js';
-import { ClaudeAPIClient } from './claude-client.js';
+import { ClaudeCodeMCPClient } from './claude-code-client.js';
 import { TestEngineManager } from './test-engine-manager.js';
 import logger from '../utils/logger.js';
 
 export class QAOrchestrator {
-  private claudeClient: ClaudeAPIClient;
+  private claudeCodeClient: ClaudeCodeMCPClient;
   private engineManager: TestEngineManager;
   private testSessions: Map<string, any> = new Map();
 
   constructor() {
-    this.claudeClient = new ClaudeAPIClient();
+    this.claudeCodeClient = new ClaudeCodeMCPClient();
     this.engineManager = new TestEngineManager();
   }
 
@@ -33,8 +33,8 @@ export class QAOrchestrator {
       // Generate unique context ID
       const contextId = `ctx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      // Use Claude to analyze the context
-      const analysis = await this.claudeClient.analyzeAppContext(context);
+      // Use Claude Code to analyze the context
+      const analysis = await this.claudeCodeClient.analyzeAppContext(context);
 
       // Store context for later use
       this.testSessions.set(contextId, {
@@ -72,8 +72,8 @@ export class QAOrchestrator {
       // Generate unique session ID
       const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      // Use Claude to generate test strategy
-      const strategy = await this.claudeClient.generateTestStrategy(context, constraints);
+      // Use Claude Code to generate test strategy
+      const strategy = await this.claudeCodeClient.generateTestStrategy(context, constraints);
 
       // Calculate estimated duration
       const estimatedDuration = strategy.testFlows.reduce(
@@ -174,8 +174,8 @@ export class QAOrchestrator {
     });
 
     try {
-      // Use Claude to analyze results
-      const analysis = await this.claudeClient.analyzeTestResults(results, context);
+      // Use Claude Code to analyze results
+      const analysis = await this.claudeCodeClient.analyzeTestResults(results, context);
 
       // Extract action items and next steps
       const actionItems = analysis.improvements

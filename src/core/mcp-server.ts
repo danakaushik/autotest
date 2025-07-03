@@ -58,6 +58,8 @@ export class AutoTestMCPServer {
             return await this.handleAnalyzeTestResults(args);
           case 'get_test_status':
             return await this.handleGetTestStatus(args);
+          case 'process_ai_request':
+            return await this.handleProcessAIRequest(args);
           default:
             throw new Error(`Unknown tool: ${name}`);
         }
@@ -225,6 +227,33 @@ export class AutoTestMCPServer {
             }
           }
         }
+      },
+      {
+        name: 'process_ai_request',
+        description: 'Process AI requests that need Claude Code analysis (for internal use)',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            requestId: {
+              type: 'string',
+              description: 'AI request ID'
+            },
+            task: {
+              type: 'string',
+              enum: ['context_analysis', 'test_strategy_generation', 'test_results_analysis'],
+              description: 'Type of AI task to process'
+            },
+            prompt: {
+              type: 'string',
+              description: 'Prompt for Claude Code to process'
+            },
+            response: {
+              type: 'string',
+              description: 'Response from Claude Code AI processing'
+            }
+          },
+          required: ['requestId', 'task', 'prompt', 'response']
+        }
       }
     ];
   }
@@ -336,6 +365,41 @@ export class AutoTestMCPServer {
       };
     } catch (error) {
       throw new Error(`Status retrieval failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  private async handleProcessAIRequest(args: any): Promise<any> {
+    try {
+      const { requestId, task, prompt, response } = args;
+      
+      logger.info('Processing AI request response:', {
+        requestId,
+        task,
+        responseLength: response.length
+      });
+      
+      // This tool is designed to receive responses from Claude Code AI processing
+      // and forward them back to the AutoTest QA Agent's AI client
+      
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              success: true,
+              data: {
+                requestId,
+                task,
+                response,
+                processedAt: new Date().toISOString()
+              },
+              message: 'AI request processed successfully'
+            }, null, 2)
+          }
+        ]
+      };
+    } catch (error) {
+      throw new Error(`AI request processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 

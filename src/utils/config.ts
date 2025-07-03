@@ -7,8 +7,11 @@ dotenv.config();
 
 // Configuration schema
 const ConfigSchema = z.object({
-  // Claude API
-  anthropicApiKey: z.string().min(1, 'ANTHROPIC_API_KEY is required'),
+  // Claude Code MCP Integration (no API key needed)
+  claudeCodeIntegration: z.object({
+    enabled: z.boolean().default(true),
+    fallbackMode: z.boolean().default(true)
+  }),
   
   // Appium Configuration
   appium: z.object({
@@ -51,7 +54,10 @@ type Config = z.infer<typeof ConfigSchema>;
 // Parse and validate configuration
 function loadConfig(): Config {
   const rawConfig = {
-    anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+    claudeCodeIntegration: {
+      enabled: process.env.CLAUDE_CODE_INTEGRATION !== 'false',
+      fallbackMode: process.env.CLAUDE_CODE_FALLBACK !== 'false'
+    },
     appium: {
       host: process.env.APPIUM_HOST || 'localhost',
       port: parseInt(process.env.APPIUM_PORT || '4723', 10)

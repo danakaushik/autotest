@@ -3,14 +3,19 @@
     "autotest-qa": {
       "command": "node",
       "args": ["./dist/index.js"],
-      "description": "AI-powered QA automation with hybrid testing capabilities",
+      "description": "AI-powered QA automation with hybrid testing capabilities. Uses Claude Code MCP for AI operations.",
       "capabilities": [
         "analyze_app_context",
         "generate_test_strategy", 
         "execute_tests",
         "analyze_test_results",
         "get_test_status"
-      ]
+      ],
+      "integration": {
+        "type": "claude_code_mcp_client",
+        "aiProvider": "claude_code",
+        "fallbackMode": true
+      }
     }
   }
 }
