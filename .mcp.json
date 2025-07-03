@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "autotest-qa": {
+      "command": "node",
+      "args": ["./dist/index.js"],
+      "description": "AI-powered QA automation with hybrid testing capabilities",
+      "capabilities": [
+        "analyze_app_context",
+        "generate_test_strategy", 
+        "execute_tests",
+        "analyze_test_results",
+        "get_test_status"
+      ]
+    }
+  }
+}
