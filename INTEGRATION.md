@@ -4,6 +4,8 @@
 
 ### 1. Add MCP Server to Claude Code
 
+The AutoTest QA Agent now acts as a **Claude Code MCP client**, leveraging Claude Code's AI capabilities instead of requiring a separate API key.
+
 In your Claude Code workspace, create or update `.mcp.json`:
 
 ```json
@@ -12,13 +14,13 @@ In your Claude Code workspace, create or update `.mcp.json`:
     "autotest-qa": {
       "command": "node",
       "args": ["/Users/deepakkaushik/Documents/Projects/autotest/dist/index.js"],
-      "env": {
-        "ANTHROPIC_API_KEY": "your-api-key-here"
-      }
+      "description": "AI-powered QA automation with hybrid testing capabilities. Uses Claude Code MCP for AI operations."
     }
   }
 }
 ```
+
+> **Note**: No API key required! The AutoTest QA Agent now uses Claude Code's built-in AI capabilities through the MCP protocol.
 
 ### 2. Usage in Claude Code
 
@@ -252,6 +254,7 @@ The AI learns from your testing patterns and provides increasingly better:
 - **Configuration Issues**: Check `.env` file and MCP setup
 - **Test Failures**: Review logs in `logs/autotest-qa.log`
 - **Engine Problems**: Verify Appium, Maestro, and Playwright installations
-- **API Errors**: Ensure ANTHROPIC_API_KEY is correctly configured
+- **Claude Code Integration**: Ensure AutoTest QA Agent is properly configured as MCP client in Claude Code
+- **AI Processing**: Check that Claude Code can process AI requests from the QA Agent
 
 Your AutoTest QA Agent is ready to revolutionize your testing workflow! 🚀

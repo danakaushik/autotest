@@ -1,6 +1,6 @@
 # AutoTest QA Agent
 
-An AI-powered QA automation system with hybrid testing capabilities using Appium, Maestro, and Playwright. Integrates seamlessly with Claude Code through the Model Context Protocol (MCP).
+An AI-powered QA automation system with hybrid testing capabilities using Appium, Maestro, and Playwright. Acts as a Claude Code MCP client, leveraging Claude Code's AI capabilities for intelligent test orchestration and analysis.
 
 ## Features
 
@@ -17,7 +17,7 @@ An AI-powered QA automation system with hybrid testing capabilities using Appium
 ### Prerequisites
 
 - Node.js 18+ 
-- Anthropic API key
+- Claude Code (with MCP support)
 - Appium server (for mobile testing)
 - Maestro CLI (for quick mobile tests)
 - Playwright browsers (auto-installed)
@@ -56,11 +56,14 @@ Add to your Claude Code MCP configuration:
   "mcpServers": {
     "autotest-qa": {
       "command": "node",
-      "args": ["/path/to/autotest-qa-agent/dist/index.js"]
+      "args": ["/path/to/autotest-qa-agent/dist/index.js"],
+      "description": "AI-powered QA automation with hybrid testing capabilities. Uses Claude Code MCP for AI operations."
     }
   }
 }
 ```
+
+> **Important**: The AutoTest QA Agent now operates as a Claude Code MCP client. No separate API key configuration is required - it uses Claude Code's built-in AI capabilities.
 
 ## Usage
 
@@ -158,8 +161,9 @@ const analysis = await analyzeTestResults(results, context);
 ### Environment Variables
 
 ```bash
-# Claude API
-ANTHROPIC_API_KEY=your_api_key_here
+# Claude Code Integration (enabled by default)
+CLAUDE_CODE_INTEGRATION_ENABLED=true
+CLAUDE_CODE_FALLBACK_MODE=true
 
 # Appium
 APPIUM_HOST=localhost
@@ -242,23 +246,31 @@ Gets current status of running tests.
 ## Architecture
 
 ```
-Claude Code (Development Agent)
+Claude Code (AI Development Agent)
        ↓ (MCP Protocol)
 ┌─────────────────────────────────────┐
-│    QA Agent MCP Server              │
+│    AutoTest QA Agent (MCP Client)   │
 ├─────────────────────────────────────┤
 │  Context Parser & Results Aggregator│
 ├─────────────────────────────────────┤
-│     ↕ Claude Code API Calls         │
-│  Test Orchestration (Claude Code)   │
-│  AI Analysis Engine (Claude Code)   │
+│     ↑ AI Request Bridge ↑           │
+│  Test Orchestration (→ Claude Code) │
+│  AI Analysis Engine (→ Claude Code) │
 ├─────────────────────────────────────┤
-│  Testing Engines (Execution Only)   │
+│  Testing Engines (Direct Execution) │
 │  ├─ Appium (Primary Mobile)         │
 │  ├─ Maestro (Quick Mobile)          │
 │  └─ Playwright (Web)                │
 └─────────────────────────────────────┘
+          ↑ Test Results ↓
+    Mobile/Web Applications
 ```
+
+### Key Architecture Changes:
+- **Claude Code MCP Client**: No longer requires separate Anthropic API key
+- **AI Request Bridge**: Routes AI processing requests to Claude Code
+- **Fallback Mode**: Graceful degradation when Claude Code AI is unavailable
+- **Direct Test Execution**: Engines run tests locally and report results
 
 ## Development
 
@@ -353,6 +365,6 @@ MIT License - see LICENSE file for details.
 
 ## Support
 
-- Issues: [GitHub Issues](https://github.com/your-repo/autotest-qa-agent/issues)
-- Documentation: [Wiki](https://github.com/your-repo/autotest-qa-agent/wiki)
-- Discussions: [GitHub Discussions](https://github.com/your-repo/autotest-qa-agent/discussions)
+- Issues: [GitHub Issues](https://github.com/danakaushik/autotest/issues)
+- Repository: [GitHub](https://github.com/danakaushik/autotest)
+- Claude Code Integration: See [INTEGRATION.md](./INTEGRATION.md) for detailed setup
